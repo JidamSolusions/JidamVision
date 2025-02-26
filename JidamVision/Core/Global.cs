@@ -1,5 +1,4 @@
-﻿using JidamVision.Grab;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing.Text;
 using System.Linq;
