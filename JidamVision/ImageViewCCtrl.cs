@@ -45,6 +45,14 @@ namespace JidamVision
         private const float MinZoom = 1f;
         private const float MaxZoom = 200.0f;
 
+        //줌아웃위하 초기값
+        private float InitialCenterX;  // 초기 이미지 중심 X
+        private float InitialCenterY;  // 초기 이미지 중심 Y
+        private float InitialWidth;    // 초기 이미지 너비
+        private float InitialHeight;   // 초기 이미지 높이
+
+
+
         public ImageViewCCtrl()
         {
             InitializeComponent();
@@ -101,6 +109,11 @@ namespace JidamVision
                 NewHeight
             );
 
+            //줌아웃위한 초기값 저장
+            InitialCenterX = ImageRect.X + (ImageRect.Width / 2);
+            InitialCenterY = ImageRect.Y + (ImageRect.Height / 2);
+            InitialWidth = NewWidth;
+            InitialHeight = NewHeight;
 
             // 줌 초기화
             ZoomFactor = 1.0f;
@@ -232,41 +245,73 @@ namespace JidamVision
             float ZoomChange = e.Delta > 0 ? 1.1f : 0.9f; //마우스휠 위로(+) 1.1배,아래로(-) 0.9배 축소
             float NewZoomFactor = ZoomFactor * ZoomChange; //현재줌배율*새로운줌배율
 
-            // 줌이 최대 값을 벗어나지 않도록 제한
-            if (NewZoomFactor < MinZoom || NewZoomFactor > MaxZoom)
-                return;
-
-
-            //*******************************************************************************************
-            if (ZoomChange < 0 || NewZoomFactor < 0.2)
+            // MaxZoom, MinZoom 값 범위내에서 줌
+            if (NewZoomFactor > MaxZoom)
             {
-                ImageRect = new RectangleF(
-                (ClientSize.Width - ImageRect.Width) / 2,
-                (ClientSize.Height - ImageRect.Height) / 2,
-                ImageRect.Width,
-                ImageRect.Height
-                 );
-
+                NewZoomFactor = MaxZoom;
+            }
+            if (NewZoomFactor < MinZoom)
+            {
+                NewZoomFactor = MinZoom;
             }
 
 
-            // 마우스 위치를 기준으로 줌 좌표 변환
-            float MouseXRatio = (e.X - ImageRect.X) / ImageRect.Width;
-            float MouseYRatio = (e.Y - ImageRect.Y) / ImageRect.Height;
+            // 줌 아웃 시 점진적으로 초기 크기와 중심위치로 복귀
+            if (ZoomChange < 1.0f)
+            {
 
-            // 새로운 이미지 크기 계산
-            float NewWidth = ImageRect.Width * ZoomChange;
-            float NewHeight = ImageRect.Height * ZoomChange;
+                /******************************************************************************************************
+                 * Lerp(Linear Interpolation, 선형 보간)은 두 값 사이를 일정한 비율로 보간하여 중간 값을 계산하는 기법
+                 * 두 값 A와 B 사이의 중간 값을 단계적으로 계산하여 부드러운 변화 효과
+                 * Lerp(A, B, t) = A * (1 - t) + B * t
+                 * A: 시작 값 (현재 값), B: 목표 값 (최종 값), t: 보간 비율 (0.0f ~ 1.0f, 값이 클수록 더 빠르게 B에 가까워짐)
+                 *******************************************************************************************************/
 
-            // 마우스 포인터 위치를 유지하면서 새로운 이미지 위치 설정
-            float NewX = e.X - (MouseXRatio * NewWidth);
-            float NewY = e.Y - (MouseYRatio * NewHeight);
 
-            // 새로운 이미지 위치 반영 (마우스 포인터를 중심으로 설정)
-            ImageRect = new RectangleF(NewX, NewY, NewWidth, NewHeight);
+                float t = 0.5f; // 이미지 점진적으로 줄어들도록 보간
 
-            // 줌 배율 업데이트
-            ZoomFactor = NewZoomFactor;
+                // 현재 크기를 점진적으로 초기 크기로 조정
+                float NewWidth = ImageRect.Width * (1 - t) + InitialWidth * t;
+                float NewHeight = ImageRect.Height * (1 - t) + InitialHeight * t;
+
+                // 현재 중심에서 점진적으로 초기 중심으로 이동
+                float CurrentCenterX = ImageRect.X + (ImageRect.Width / 2);
+                float CurrentCenterY = ImageRect.Y + (ImageRect.Height / 2);
+
+                float NewCenterX = CurrentCenterX * (1 - t) + InitialCenterX * t;
+                float NewCenterY = CurrentCenterY * (1 - t) + InitialCenterY * t;
+
+                // 새로운 이미지 위치 반영 (점진적으로 초기 상태로 회귀)
+                ImageRect = new RectangleF(
+                    NewCenterX - (NewWidth / 2),
+                    NewCenterY - (NewHeight / 2),
+                    NewWidth,
+                    NewHeight
+                );
+
+                ZoomFactor = ZoomFactor * (1 - t) + 1.0f * t;
+            }
+            else  // 줌 인 시 마우스 위치 기준 확대
+            {
+                // 마우스 위치를 기준으로 줌 좌표 변환
+                float MouseXRatio = (e.X - ImageRect.X) / ImageRect.Width;
+                float MouseYRatio = (e.Y - ImageRect.Y) / ImageRect.Height;
+
+                // 새로운 이미지 크기 계산
+                float NewWidth = ImageRect.Width * ZoomChange;
+                float NewHeight = ImageRect.Height * ZoomChange;
+
+                // 마우스 포인터 위치를 유지하면서 새로운 이미지 위치 설정
+                float NewX = e.X - (MouseXRatio * NewWidth);
+                float NewY = e.Y - (MouseYRatio * NewHeight);
+
+                // 마우스 포인터를 중심으로 새로운 이미지 위치 반영
+                ImageRect = new RectangleF(NewX, NewY, NewWidth, NewHeight);
+
+
+                // 배율 업데이트
+                ZoomFactor = NewZoomFactor;
+            }
 
             // 줌 후 이동할 때 중심을 기준으로 좌표 갱신
             Offset = new Point((int)ImageRect.X, (int)ImageRect.Y);
