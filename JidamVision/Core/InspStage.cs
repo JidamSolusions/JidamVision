@@ -1,5 +1,4 @@
-﻿using DevExpress.Drawing.Internal.Fonts.Interop;
-using OpenCvSharp;
+﻿using OpenCvSharp;
 using OpenCvSharp.Extensions;
 using System;
 using System.Collections.Generic;
