@@ -67,6 +67,8 @@ namespace JidamVision.Grab
         protected GrabUserBuffer[] _userImageBuffer = null;
         public int BufferIndex { get; set; } = 0;
 
+        protected string _strIpAddr = "";
+
         internal bool HardwareTrigger { get; set; } = false;
         internal bool IncreaseBufferIndex { get; set; } = false;
 
@@ -94,10 +96,34 @@ namespace JidamVision.Grab
 
         internal virtual bool SetTriggerMode(bool hardwareTrigger) { return true; }
 
-        internal abstract bool InitGrab();
-        internal abstract bool InitBuffer(int bufferCount = 1);
-        internal abstract bool SetBuffer(byte[] buffer, IntPtr bufferPtr, GCHandle bufferHandle, int bufferIndex = 0);
+        internal bool InitGrab()
+        {
+            if (!Create())
+                return false;
 
+            if (!Open())
+                return false;
+
+            return true;
+        }
+
+        internal bool InitBuffer(int bufferCount = 1)
+        {
+            if (bufferCount < 1)
+                return false;
+
+            _userImageBuffer = new GrabUserBuffer[bufferCount];
+            return true;
+        }
+
+        internal bool SetBuffer(byte[] buffer, IntPtr bufferPtr, GCHandle bufferHandle, int bufferIndex = 0)
+        {
+            _userImageBuffer[bufferIndex].ImageBuffer = buffer;
+            _userImageBuffer[bufferIndex].ImageBufferPtr = bufferPtr;
+            _userImageBuffer[bufferIndex].ImageHandle = bufferHandle;
+
+            return true;
+        }
         protected virtual void OnGrabCompleted(object obj = null)
         {
             GrabCompleted?.Invoke(this, obj);
@@ -106,6 +132,8 @@ namespace JidamVision.Grab
         {
             TransferCompleted?.Invoke(this, obj);
         }
+
+
 
         internal abstract void Dispose();
     }

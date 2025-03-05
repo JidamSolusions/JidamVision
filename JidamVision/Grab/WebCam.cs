@@ -195,34 +195,6 @@ namespace JidamVision.Grab
             return true;
         }
 
-        internal override bool InitGrab()
-        {
-            if (!Create())
-                return false;
-
-            if (!Open())
-                return false;
-
-            return true;
-        }
-
-        internal override bool InitBuffer(int bufferCount = 1)
-        {
-            if (bufferCount < 1)
-                return false;
-
-            _userImageBuffer = new GrabUserBuffer[bufferCount];
-            return true;
-        }
-
-        internal override bool SetBuffer(byte[] buffer, IntPtr bufferPtr, GCHandle bufferHandle, int bufferIndex = 0)
-        {
-            _userImageBuffer[bufferIndex].ImageBuffer = buffer;
-            _userImageBuffer[bufferIndex].ImageBufferPtr = bufferPtr;
-            _userImageBuffer[bufferIndex].ImageHandle = bufferHandle;
-
-            return true;
-        }
         #endregion
 
         #region Dispose
