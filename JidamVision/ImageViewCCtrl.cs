@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenCvSharp;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -8,30 +9,31 @@ using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Windows.Forms;
 
 namespace JidamVision
 {
     public partial class ImageViewCCtrl : UserControl
     {
-        private Point _roiStart = Point.Empty;
+        private System.Drawing.Point _roiStart = System.Drawing.Point.Empty;
         private Rectangle _roiRect = Rectangle.Empty;
         private bool _isSelectingRoi = false;
         private bool _isResizingRoi = false;
         private bool _isMovingRoi = false;
-        private Point _resizeStart = Point.Empty;
-        private Point _moveStart = Point.Empty;
+        private System.Drawing.Point _resizeStart = System.Drawing.Point.Empty;
+        private System.Drawing.Point _moveStart = System.Drawing.Point.Empty;
         private int _resizeDirection = -1;
         private const int _ResizeHandleSize = 10;
 
         // 마우스 클릭 위치 저장
-        private Point RightClick = Point.Empty;
+        private System.Drawing.Point RightClick = System.Drawing.Point.Empty;
 
         // 현재 이미지 이동을 위한 오프셋 값
-        private Point Offset = Point.Empty;
+        private System.Drawing.Point Offset = System.Drawing.Point.Empty;
 
         // 마지막 오프셋 값을 저장하여 마우스 이동을 연속적으로 처리
-        private Point LastOffset = new Point(0, 0);
+        private System.Drawing.Point LastOffset = new System.Drawing.Point(0, 0);
 
         // 현재 로드된 이미지
         private Bitmap Bitmap = null;
@@ -59,6 +61,8 @@ namespace JidamVision
         //줌아웃위하 초기값
         private float InitialCenterX;  // 초기 이미지 중심 X
         private float InitialCenterY;  // 초기 이미지 중심 Y
+        private float InitialStartX;    //resize 위한 초기 X값 저장
+        private float InitialStartY;    //resize 위한 초기 Y값 저장
         private float InitialWidth;    // 초기 이미지 너비
         private float InitialHeight;   // 초기 이미지 높이
 
@@ -96,9 +100,40 @@ namespace JidamVision
             CanvasSize.Width = Width;
             CanvasSize.Height = Height;
 
-            // 초기 이미지 크기를 UserControl 크기로 설정
-            ImageRect = new RectangleF(0, 0, Width, Height);
+            if (Bitmap == null) return;
 
+            // UserControl 크기에 맞춰 이미지 비율 유지하여 크기 조정
+            float WidthRatio = (float)Width / Bitmap.Width;  //UserControl1 Width/Bitmap.Width
+            float HeightRatio = (float)Height / Bitmap.Height;
+            float Scale = Math.Min(WidthRatio, HeightRatio); // 더 작은 값을 선택하여 비율 유지
+
+            float NewWidth = Bitmap.Width * Scale;
+            float NewHeight = Bitmap.Height * Scale;
+
+            if (InitialStartX == 0 || InitialStartY == 0)
+            {
+                InitialStartX = ImageRect.X;
+                InitialStartY = ImageRect.Y;
+            }
+
+            // 이미지가 UserControl 중앙에 배치되도록 정렬
+            ImageRect = new RectangleF(
+                (Width - NewWidth) / 2, // UserControl 너비에서 이미지 너비를 뺀 후, 절반을 왼쪽 여백으로 설정하여 중앙 정렬
+                (Height - NewHeight) / 2,
+                NewWidth,
+                NewHeight
+            );
+
+            UpdateROI();
+
+            //줌아웃위한 초기값 저장
+            InitialCenterX = ImageRect.X + (ImageRect.Width / 2);
+            InitialCenterY = ImageRect.Y + (ImageRect.Height / 2);
+
+            InitialStartX = ImageRect.X;
+            InitialStartY = ImageRect.Y;
+            InitialWidth = NewWidth;
+            InitialHeight = NewHeight;
         }
 
         public void LoadBitmap(Bitmap bitmap)
@@ -140,7 +175,7 @@ namespace JidamVision
             ZoomFactor = 1.0f;
 
             // 이미지 이동을 위한 오프셋 값 초기화
-            Offset = new Point((int)ImageRect.X, (int)ImageRect.Y);  //이미지 왼쪽상단(Top-Left)의 시작 좌표
+            Offset = new System.Drawing.Point((int)ImageRect.X, (int)ImageRect.Y);  //이미지 왼쪽상단(Top-Left)의 시작 좌표
             LastOffset = Offset;
 
             // 변경된 화면을 다시 그리도록 요청
@@ -271,12 +306,12 @@ namespace JidamVision
                         {
                             g.DrawRectangle(pen, rect);
                         }
-                        
+
                         // 리사이즈 핸들 그리기 (8개 포인트: 4 모서리 + 4 변 중간)
                         using (Brush brush = new SolidBrush(Color.LightBlue))
                         {
-                            Point[] resizeHandles = GetResizeHandles(rect);
-                            foreach (Point handle in resizeHandles)
+                            System.Drawing.Point[] resizeHandles = GetResizeHandles(rect);
+                            foreach (System.Drawing.Point handle in resizeHandles)
                             {
                                 g.FillRectangle(brush, handle.X - _ResizeHandleSize / 2, handle.Y - _ResizeHandleSize / 2, _ResizeHandleSize, _ResizeHandleSize);
                             }
@@ -419,25 +454,25 @@ namespace JidamVision
         }
 
         //마우스 위치가 ROI 크기 변경을 위한 여부를 확인하기 위해, 4개 모서리와 사각형 라인의 중간 위치 반환
-        private Point[] GetResizeHandles(Rectangle rect)
+        private System.Drawing.Point[] GetResizeHandles(Rectangle rect)
         {
-            return new Point[]
+            return new System.Drawing.Point[]
             {
-                new Point(rect.Left, rect.Top), // 좌상
-                new Point(rect.Right, rect.Top), // 우상
-                new Point(rect.Left, rect.Bottom), // 좌하
-                new Point(rect.Right, rect.Bottom), // 우하
-                new Point(rect.Left + rect.Width / 2, rect.Top), // 상 중간
-                new Point(rect.Left + rect.Width / 2, rect.Bottom), // 하 중간
-                new Point(rect.Left, rect.Top + rect.Height / 2), // 좌 중간
-                new Point(rect.Right, rect.Top + rect.Height / 2) // 우 중간
+                new System.Drawing.Point(rect.Left, rect.Top), // 좌상
+                new System.Drawing.Point(rect.Right, rect.Top), // 우상
+                new System.Drawing.Point(rect.Left, rect.Bottom), // 좌하
+                new System.Drawing.Point(rect.Right, rect.Bottom), // 우하
+                new System.Drawing.Point(rect.Left + rect.Width / 2, rect.Top), // 상 중간
+                new System.Drawing.Point(rect.Left + rect.Width / 2, rect.Bottom), // 하 중간
+                new System.Drawing.Point(rect.Left, rect.Top + rect.Height / 2), // 좌 중간
+                new System.Drawing.Point(rect.Right, rect.Top + rect.Height / 2) // 우 중간
             };
         }
 
         //마우스 위치가 크기 변경 위치에 해당하는 지를, 위치 인덱스로 반환
-        private int GetResizeHandleIndex(Point mousePos)
+        private int GetResizeHandleIndex(System.Drawing.Point mousePos)
         {
-            Point[] handles = GetResizeHandles(_roiRect);
+            System.Drawing.Point[] handles = GetResizeHandles(_roiRect);
             for (int i = 0; i < handles.Length; i++)
             {
                 Rectangle handleRect = new Rectangle(handles[i].X - _ResizeHandleSize / 2, handles[i].Y - _ResizeHandleSize / 2, _ResizeHandleSize, _ResizeHandleSize);
@@ -460,7 +495,7 @@ namespace JidamVision
         }
 
         //ROI 크기 변경시, 마우스 위치를 입력받아, ROI 크기 변경
-        private void ResizeROI(Point mousePos)
+        private void ResizeROI(System.Drawing.Point mousePos)
         {
             switch (_resizeDirection)
             {
@@ -550,7 +585,7 @@ namespace JidamVision
             }
 
             // 줌 후 이동할 때 중심을 기준으로 좌표 갱신
-            Offset = new Point((int)ImageRect.X, (int)ImageRect.Y);
+            Offset = new System.Drawing.Point((int)ImageRect.X, (int)ImageRect.Y);
             LastOffset = Offset;
 
             // 다시 그리기 요청
@@ -561,6 +596,31 @@ namespace JidamVision
         {
             ResizeCanas();
             Invalidate();
+        }
+
+        // 창 resize ROI 업데이트
+        private void UpdateROI()
+        {
+            if (Bitmap == null || _roiRect.IsEmpty || InitialWidth == 0 || InitialHeight == 0)
+                return;
+
+            // 기존 ROI 좌표를 원본 ImageRect 기준으로 변환 (비율)
+            float roiX_ratio = (_roiRect.X - InitialStartX) / InitialWidth;
+            float roiY_ratio = (_roiRect.Y - InitialStartY) / InitialHeight;
+            float roiW_ratio = _roiRect.Width / InitialWidth;
+            float roiH_ratio = _roiRect.Height / InitialHeight;
+
+            // 새로운 ImageRect 크기에 맞춰 ROI 조정
+            _roiRect.X = (int)(ImageRect.X + roiX_ratio * ImageRect.Width);
+            _roiRect.Y = (int)(ImageRect.Y + roiY_ratio * ImageRect.Height);
+            _roiRect.Width = (int)(roiW_ratio * ImageRect.Width);
+            _roiRect.Height = (int)(roiH_ratio * ImageRect.Height);
+
+            // 새로운 초기 크기 갱신
+            InitialStartX = ImageRect.X;
+            InitialStartY = ImageRect.Y;
+            InitialWidth = ImageRect.Width;
+            InitialHeight = ImageRect.Height;
         }
 
         public Rectangle GetRoiRect()
