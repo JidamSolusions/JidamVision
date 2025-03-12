@@ -54,12 +54,16 @@ namespace JidamVision.Algorithm
             // 가장 높은 점수 위치 찾기
             Cv2.MinMaxLoc(result, out _, out double maxVal, out _, out Point maxLoc);
 
+            float matchThreshold = MatchScore / 100.0f;
             OutScore = (int)(maxVal * 100);
 
             Console.WriteLine($"최적 매칭 위치: {maxLoc}, 신뢰도: {maxVal:F2}");
 
             OutPoint = new Point(maxLoc.X + _templateImage.Width, maxLoc.Y + _templateImage.Height);
-            
+
+            if (OutScore < matchThreshold)
+                return false;
+
             return true;
         }
 

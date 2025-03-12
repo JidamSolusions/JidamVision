@@ -454,7 +454,7 @@ namespace JidamVision.Grab
 
         ~HikRobotCam()
         {
-            Dispose(disposing: false);
+            Dispose(disposing: true);
         }
         #endregion
     }

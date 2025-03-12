@@ -63,11 +63,8 @@ namespace JidamVision.Teach
         //#MATCH PROP#5 템플릿 매칭 검사
         public bool DoInpsect()
         {
-            if (_teachingImage is null)
+            if (_teachingImage is null || _matchAlgorithm is null)
                 return false;
-
-            if (_matchAlgorithm is null)
-                _matchAlgorithm = new MatchAlgorithm();
 
             Mat srcImage = Global.Inst.InspStage.GetMat();
 
