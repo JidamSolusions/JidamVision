@@ -560,7 +560,30 @@ namespace JidamVision
         private void ImageViewCCtrl_Resize(object sender, EventArgs e)
         {
             ResizeCanas();
+            UpdateROI();
             Invalidate();
+        }
+
+
+        // 창 resize ROI 업데이트
+        private void UpdateROI()
+        {
+            if (Bitmap == null || _roiRect.IsEmpty || ImageRect.Width == 0 || ImageRect.Height == 0)
+                return;
+
+            // 새로운 비율 계산
+            float scaleX = (float)ImageRect.Width / InitialWidth;
+            float scaleY = (float)ImageRect.Height / InitialHeight;
+
+            // ROI 위치 및 크기 업데이트
+            _roiRect.X = (int)(_roiRect.X * scaleX);
+            _roiRect.Y = (int)(_roiRect.Y * scaleY);
+            _roiRect.Width = (int)(_roiRect.Width * scaleX);
+            _roiRect.Height = (int)(_roiRect.Height * scaleY);
+
+            // 이전 크기 갱신
+            InitialWidth = (int)ImageRect.Width;
+            InitialHeight = (int)ImageRect.Height;
         }
 
         public Rectangle GetRoiRect()
