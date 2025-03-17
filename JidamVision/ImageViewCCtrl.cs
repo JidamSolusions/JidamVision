@@ -15,7 +15,7 @@ using JidamVision.Teach;
 using static JidamVision.Core.Define;
 
 namespace JidamVision
-{
+{ 
     public enum EntityActionType
     {
         None = 0,
