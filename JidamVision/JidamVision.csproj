@@ -152,6 +152,7 @@
     <Compile Include="Property\BinaryInspProp.Designer.cs">
       <DependentUpon>BinaryInspProp.cs</DependentUpon>
     </Compile>
+    <Compile Include="Property\FilterFunction.cs" />
     <Compile Include="Property\FilterInspProp.cs">
       <SubType>UserControl</SubType>
     </Compile>
