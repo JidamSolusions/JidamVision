@@ -33,7 +33,7 @@ namespace JidamVision
 
     public partial class ImageViewCCtrl : UserControl
     {
-        //#MULTI ROI#2 ROI를 추가,수정,삭제 등으로 변경 시, 이벤트 발생
+        //#MULTI ROI#3 ROI를 추가,수정,삭제 등으로 변경 시, 이벤트 발생
         public event EventHandler<DiagramEntityEventArgs> ModifyROI;
 
         private Point _roiStart = Point.Empty;
