@@ -363,13 +363,9 @@ namespace JidamVision.Core
             UpdateDiagramEntity();
         }
 
-        public void SaveModel(string filePath)
+        public void SaveModel()
         {
-            //입력 경로가 없으면 현재 모델 저장
-            if (string.IsNullOrEmpty(filePath))
-                Global.Inst.InspStage.CurModel.Save();
-            else
-                Global.Inst.InspStage.CurModel.SaveAs(filePath);
+            Global.Inst.InspStage.CurModel.Save();
         }
     }
 }

@@ -122,25 +122,13 @@ namespace JidamVision
         private void ModelSaveMenuItem_Click(object sender, EventArgs e)
         {
             //모델 파일 저장
-            Global.Inst.InspStage.SaveModel("");
+            Global.Inst.InspStage.SaveModel();
         }
 
         private void ModelSaveAsMenuItem_Click(object sender, EventArgs e)
         {
-            //다른이름으로 모델 파일 저장
-            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
-            {
-                saveFileDialog.InitialDirectory = SettingXml.Inst.ModelDir;
-                saveFileDialog.Title = "모델 파일 선택";
-                saveFileDialog.Filter = "Model Files|*.xml;";
-                saveFileDialog.DefaultExt = "xml";
-
-                if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    string filePath = saveFileDialog.FileName;
-                    Global.Inst.InspStage.SaveModel(filePath);
-                }
-            }
+            NewModel newModel = new NewModel(true);
+            newModel.ShowDialog();
         }
 
         private void ImageLoadMenuItem_Click(object sender, EventArgs e)

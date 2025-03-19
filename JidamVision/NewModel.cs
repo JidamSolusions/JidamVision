@@ -1,5 +1,6 @@
 ﻿using JidamVision.Core;
 using JidamVision.Setting;
+using JidamVision.Teach;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -28,9 +29,29 @@ namespace JidamVision
 
     public partial class NewModel : Form
     {
-        public NewModel()
+        public bool _saveAsMode = false;
+
+        public NewModel(bool saveAs = false)
         {
             InitializeComponent();
+
+            _saveAsMode = saveAs;
+
+            if (_saveAsMode)
+            {
+                this.Text = "모델 다른 이름으로 저장";
+                btnCreate.Text = "저장";
+
+                Model model = Global.Inst.InspStage.CurModel;
+
+                txtModelName.Text = model.ModelName;
+                txtModelInfo.Text = model.ModelInfo;
+            }
+            else
+            {
+                this.Text = "신규 모델 생성";
+                btnCreate.Text = "생성";
+            }
         }
 
         private void btnCreate_Click(object sender, EventArgs e)
@@ -62,8 +83,17 @@ namespace JidamVision
 
             string modelInfo = txtModelInfo.Text.Trim();
 
-            Global.Inst.InspStage.CurModel.CreateModel(modelPath, modelName, modelInfo);
-            Global.Inst.InspStage.CurModel.Save();
+            if(_saveAsMode)
+            {
+                Global.Inst.InspStage.CurModel.CreateModel(modelPath, modelName, modelInfo);
+                Global.Inst.InspStage.CurModel.Save();
+            }
+            else
+            {
+                Global.Inst.InspStage.CurModel.CreateModel(modelPath, modelName, modelInfo);
+                Global.Inst.InspStage.CurModel.Save();
+            }
+
             this.Close();
         }
     }

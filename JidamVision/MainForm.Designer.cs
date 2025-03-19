@@ -30,6 +30,7 @@
         {
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.FileTopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ModelNewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ModelOpenMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ModelSaveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ModelSaveAsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -38,12 +39,12 @@
             this.ImageSaveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SetupTopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SetupMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ModelNewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
             // 
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FileTopMenuItem,
             this.SetupTopMenuItem});
@@ -66,6 +67,13 @@
             this.FileTopMenuItem.Name = "FileTopMenuItem";
             this.FileTopMenuItem.Size = new System.Drawing.Size(37, 20);
             this.FileTopMenuItem.Text = "File";
+            // 
+            // ModelNewMenuItem
+            // 
+            this.ModelNewMenuItem.Name = "ModelNewMenuItem";
+            this.ModelNewMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.ModelNewMenuItem.Text = "Model New";
+            this.ModelNewMenuItem.Click += new System.EventHandler(this.ModelNewMenuItem_Click);
             // 
             // ModelOpenMenuItem
             // 
@@ -118,16 +126,9 @@
             // SetupMenuItem
             // 
             this.SetupMenuItem.Name = "SetupMenuItem";
-            this.SetupMenuItem.Size = new System.Drawing.Size(105, 22);
+            this.SetupMenuItem.Size = new System.Drawing.Size(180, 22);
             this.SetupMenuItem.Text = "Setup";
             this.SetupMenuItem.Click += new System.EventHandler(this.SetupMenuItem_Click);
-            // 
-            // ModelNewMenuItem
-            // 
-            this.ModelNewMenuItem.Name = "ModelNewMenuItem";
-            this.ModelNewMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.ModelNewMenuItem.Text = "Model New";
-            this.ModelNewMenuItem.Click += new System.EventHandler(this.ModelNewMenuItem_Click);
             // 
             // MainForm
             // 
