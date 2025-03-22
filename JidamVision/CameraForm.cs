@@ -220,7 +220,7 @@ namespace JidamVision
         {
             Model model = Global.Inst.InspStage.CurModel;
             List<InspWindow> windowList = model.InspWindowList;
-            if(windowList.Count <= 0) 
+            if (windowList.Count <= 0)
                 return;
 
             List<DiagramEntity> diagramEntityList = new List<DiagramEntity>();
