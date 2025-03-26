@@ -205,11 +205,19 @@
     <Compile Include="ResultForm.Designer.cs">
       <DependentUpon>ResultForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Sequence\Communicator.cs" />
+    <Compile Include="Sequence\Sequence.cs" />
     <Compile Include="Setting\CameraSetting.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Setting\CameraSetting.Designer.cs">
       <DependentUpon>CameraSetting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Setting\CommunicatorSetting.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Setting\CommunicatorSetting.Designer.cs">
+      <DependentUpon>CommunicatorSetting.cs</DependentUpon>
     </Compile>
     <Compile Include="Setting\PathSetting.cs">
       <SubType>UserControl</SubType>
@@ -235,6 +243,7 @@
     <Compile Include="Teach\InspWindowFactory.cs" />
     <Compile Include="Teach\Model.cs" />
     <Compile Include="Util\BitmapExtension.cs" />
+    <Compile Include="Util\NetHelper.cs" />
     <Compile Include="Util\SLogger.cs" />
     <Compile Include="Util\XmlHelper.cs" />
     <EmbeddedResource Include="CameraForm.resx">
@@ -282,6 +291,9 @@
     <EmbeddedResource Include="Setting\CameraSetting.resx">
       <DependentUpon>CameraSetting.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Setting\CommunicatorSetting.resx">
+      <DependentUpon>CommunicatorSetting.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Setting\PathSetting.resx">
       <DependentUpon>PathSetting.cs</DependentUpon>
     </EmbeddedResource>
@@ -319,6 +331,12 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ExternalLib\MessagingLibrary\MessagingLibrary.csproj">
+      <Project>{9a7ef5c0-1ecc-4a9d-ac22-105014ab2bdb}</Project>
+      <Name>MessagingLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

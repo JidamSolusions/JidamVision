@@ -5,6 +5,8 @@ VisualStudioVersion = 17.11.35208.52
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JidamVision", "JidamVision\JidamVision.csproj", "{4C03A6C8-1C44-4735-A33B-4E57F84D5F3B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessagingLibrary", "ExternalLib\MessagingLibrary\MessagingLibrary.csproj", "{9A7EF5C0-1ECC-4A9D-AC22-105014AB2BDB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,14 @@ Global
 		{4C03A6C8-1C44-4735-A33B-4E57F84D5F3B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4C03A6C8-1C44-4735-A33B-4E57F84D5F3B}.Release|x64.ActiveCfg = Release|x64
 		{4C03A6C8-1C44-4735-A33B-4E57F84D5F3B}.Release|x64.Build.0 = Release|x64
+		{9A7EF5C0-1ECC-4A9D-AC22-105014AB2BDB}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{9A7EF5C0-1ECC-4A9D-AC22-105014AB2BDB}.Debug|Any CPU.Build.0 = Debug|x64
+		{9A7EF5C0-1ECC-4A9D-AC22-105014AB2BDB}.Debug|x64.ActiveCfg = Debug|x64
+		{9A7EF5C0-1ECC-4A9D-AC22-105014AB2BDB}.Debug|x64.Build.0 = Debug|x64
+		{9A7EF5C0-1ECC-4A9D-AC22-105014AB2BDB}.Release|Any CPU.ActiveCfg = Release|x64
+		{9A7EF5C0-1ECC-4A9D-AC22-105014AB2BDB}.Release|Any CPU.Build.0 = Release|x64
+		{9A7EF5C0-1ECC-4A9D-AC22-105014AB2BDB}.Release|x64.ActiveCfg = Release|x64
+		{9A7EF5C0-1ECC-4A9D-AC22-105014AB2BDB}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

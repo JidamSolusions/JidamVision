@@ -1,5 +1,6 @@
 ﻿using Common.Util.Helpers;
 using JidamVision.Grab;
+using JidamVision.Sequence;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -97,9 +98,14 @@ namespace JidamVision.Setting
 
         public SettingXml() { }
 
+        public string MachineName { get; set; } = "Jidam";
+
         public string ModelDir { get; set; } = "";
 
         public CameraType CamType { get; set; } = CameraType.WebCam;
+
+        public CommunicatorType CommType { get; set; }
+        public string CommIP {  get; set; }
 
     }
 }
