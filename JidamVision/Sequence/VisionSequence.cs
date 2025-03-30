@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -34,15 +35,16 @@ namespace JidamVision.Sequence
         InspDone,
         InspEnd,
         ModeLoaded,
+        MmiReady,
         Error
     }
 
-    public enum MmiSeq
+    public enum VisionSeq
     {
         None = 0,
-        InspReady,
-        InspStart,
-        InspDone,
+        OpenRecipe,
+        MmiStart,
+        MmiStop,
         Error
 
     }
@@ -71,11 +73,14 @@ namespace JidamVision.Sequence
         private Message _message = new Message();
         private Communicator _communicator = null;
 
-        //private Thread _sequenceThread = null;
+        private Thread _sequenceThread = null;
         private bool _isRun = true;
-        private MmiSeq _mmiState = MmiSeq.None;
+        private VisionSeq _visionState = VisionSeq.None;
+        private string _modelName = "";
 
         private string _lastErrMsg;
+
+        private bool _mmiOpenRecipe = false;
 
         public bool IsMmiConnected { get; set; } = false;
 
@@ -129,10 +134,9 @@ namespace JidamVision.Sequence
             //통신 이벤트 등록
             _message.MachineName = SettingXml.Inst.MachineName;
 
-            //현재 사용하지 않음
-            //_sequenceThread = new Thread(SequenceThread);
-            //_sequenceThread.IsBackground = true;
-            //_sequenceThread.Start();
+            _sequenceThread = new Thread(SequenceThread);
+            _sequenceThread.IsBackground = true;
+            _sequenceThread.Start();
         }
 
         public void ResetCommunicator(Communicator communicator)
@@ -163,22 +167,67 @@ namespace JidamVision.Sequence
             }
         }
 
+        public void StartAutoRun(string modelName)
+        {
+            _visionState = VisionSeq.OpenRecipe;
+            _modelName = modelName;
+        }
+
+        public void SetVisionSeq(VisionSeq visionSeq, object param)
+        {
+            _visionState = visionSeq;
+        }
+
         private void UpdateSeqState()
         {
-            switch (_mmiState)
+            switch (_visionState)
             {
-                case MmiSeq.None:
+                case VisionSeq.None:
                     {
                     }
                     break;
-                case MmiSeq.Error:
+                case VisionSeq.OpenRecipe:
+                    {
+                        if (_modelName == "")
+                        {
+                            _visionState = VisionSeq.None;
+                            break;
+                        }
+
+                        SLogger.Write("Vision Seq : " + _visionState.ToString());
+                        _mmiOpenRecipe = false;
+                        _message.Command = Message.MessageCommand.OpenRecipe;
+                        _message.Tool = _modelName;
+                        _message.Status = CommandStatus.None;
+                        _message.ErrorMessage = "";
+                        SendMessage(_message);
+
+                        _visionState = VisionSeq.MmiStart;
+                    }
+                    break;
+                case VisionSeq.MmiStart:
+                    {
+                        if (!_mmiOpenRecipe)
+                            break;
+
+                        SLogger.Write("Vision Seq : " + _visionState.ToString());
+
+                        _message.Command = Message.MessageCommand.MmiStart;
+                        _message.Status = CommandStatus.None;
+                        _message.ErrorMessage = "";
+                        SendMessage(_message);
+
+                        _visionState = VisionSeq.None;
+                    }
+                    break;
+                case VisionSeq.Error:
                     {
                         _message.Command = Message.MessageCommand.Error;
                         _message.Status = CommandStatus.Fail;
                         _message.ErrorMessage = _lastErrMsg;
                         SendMessage(_message);
 
-                        _mmiState = MmiSeq.None;
+                        _visionState = VisionSeq.None;
                     }
                     break;
             }
@@ -195,12 +244,26 @@ namespace JidamVision.Sequence
                     break;
                 case Message.MessageCommand.OpenRecipe:
                     {
-                        SeqCommand(this, SeqCmd.OpenRecipe, (object)e.Tool);
+                        if(e.Status == Message.CommandStatus.Success)
+                        {
+                            //비젼의 요청에 의해, OpenRecipe가 성공한 경우
+                            _mmiOpenRecipe = true;
+                            break;
+                        }
+                        else
+                        {
+                            //Mmi에서 비젼에, OpenRecipe를 요청한 경우
+                            SeqCommand(this, SeqCmd.OpenRecipe, (object)e.Tool);
+                        }
                     }
                     break;
-                case Message.MessageCommand.InspReady:
+                case Message.MessageCommand.MmiStart:
                     {
-                        SeqCommand(this, SeqCmd.InspReady, e);
+                        if (e.Status == Message.CommandStatus.Success)
+                        {
+                            //비젼의 요청에 의해, OpenRecipe가 성공한 경우
+                            break;
+                        }
                     }
                     break;
                 case Message.MessageCommand.InspStart:
@@ -221,7 +284,7 @@ namespace JidamVision.Sequence
         {
             switch (visionCmd)
             {
-                case Vision2Mmi.ModeLoaded:
+                 case Vision2Mmi.ModeLoaded:
                     {
                         string errMsg = (string)e;
                         if (errMsg != "")
@@ -253,17 +316,10 @@ namespace JidamVision.Sequence
                     break;
                 case Vision2Mmi.InspDone:
                     {
-                        string errMsg = (string)e;
-
-                        if (errMsg != "")
-                        {
-                            _lastErrMsg = errMsg;
-                            SendError();
-                            break;
-                        }
+                        bool isDefect = (bool)e;
 
                         _message.Command = Message.MessageCommand.InspDone;
-                        _message.Status = CommandStatus.Success;
+                        _message.Status = isDefect ? CommandStatus.Ng :CommandStatus.Good;
                         SendMessage(_message);
                     }
                     break;
@@ -280,7 +336,7 @@ namespace JidamVision.Sequence
 
         private void ResetSequence()
         {
-            _mmiState = MmiSeq.None;
+            _visionState = VisionSeq.None;
         }
 
 

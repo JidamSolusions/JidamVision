@@ -41,15 +41,17 @@
             this.chkCycle = new System.Windows.Forms.CheckBox();
             this.chkPreview = new System.Windows.Forms.CheckBox();
             this.chkShowROI = new System.Windows.Forms.CheckBox();
+            this.btnAutoRun = new System.Windows.Forms.Button();
             this.imageViewer = new JidamVision.ImageViewCCtrl();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnGrab
             // 
-            this.btnGrab.Location = new System.Drawing.Point(388, 12);
+            this.btnGrab.Location = new System.Drawing.Point(554, 18);
+            this.btnGrab.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnGrab.Name = "btnGrab";
-            this.btnGrab.Size = new System.Drawing.Size(75, 23);
+            this.btnGrab.Size = new System.Drawing.Size(107, 34);
             this.btnGrab.TabIndex = 1;
             this.btnGrab.Text = "Grab";
             this.btnGrab.UseVisualStyleBackColor = true;
@@ -57,9 +59,10 @@
             // 
             // btnLive
             // 
-            this.btnLive.Location = new System.Drawing.Point(388, 41);
+            this.btnLive.Location = new System.Drawing.Point(554, 60);
+            this.btnLive.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnLive.Name = "btnLive";
-            this.btnLive.Size = new System.Drawing.Size(75, 23);
+            this.btnLive.Size = new System.Drawing.Size(107, 34);
             this.btnLive.TabIndex = 3;
             this.btnLive.Text = "Live";
             this.btnLive.UseVisualStyleBackColor = true;
@@ -72,11 +75,9 @@
             this.groupBox1.Controls.Add(this.rbtnGreenChannel);
             this.groupBox1.Controls.Add(this.rbtnBlueChannel);
             this.groupBox1.Controls.Add(this.rbtnRedChannel);
-            this.groupBox1.Location = new System.Drawing.Point(389, 209);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(2);
+            this.groupBox1.Location = new System.Drawing.Point(556, 358);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(2);
-            this.groupBox1.Size = new System.Drawing.Size(74, 122);
+            this.groupBox1.Size = new System.Drawing.Size(106, 183);
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Channel";
@@ -84,9 +85,10 @@
             // rbtnColor
             // 
             this.rbtnColor.AutoSize = true;
-            this.rbtnColor.Location = new System.Drawing.Point(7, 19);
+            this.rbtnColor.Location = new System.Drawing.Point(10, 28);
+            this.rbtnColor.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.rbtnColor.Name = "rbtnColor";
-            this.rbtnColor.Size = new System.Drawing.Size(53, 16);
+            this.rbtnColor.Size = new System.Drawing.Size(76, 22);
             this.rbtnColor.TabIndex = 4;
             this.rbtnColor.TabStop = true;
             this.rbtnColor.Text = "Color";
@@ -96,10 +98,9 @@
             // rbtnGrayChannel
             // 
             this.rbtnGrayChannel.AutoSize = true;
-            this.rbtnGrayChannel.Location = new System.Drawing.Point(7, 100);
-            this.rbtnGrayChannel.Margin = new System.Windows.Forms.Padding(2);
+            this.rbtnGrayChannel.Location = new System.Drawing.Point(10, 150);
             this.rbtnGrayChannel.Name = "rbtnGrayChannel";
-            this.rbtnGrayChannel.Size = new System.Drawing.Size(50, 16);
+            this.rbtnGrayChannel.Size = new System.Drawing.Size(71, 22);
             this.rbtnGrayChannel.TabIndex = 3;
             this.rbtnGrayChannel.TabStop = true;
             this.rbtnGrayChannel.Text = "Gray";
@@ -108,10 +109,9 @@
             // rbtnGreenChannel
             // 
             this.rbtnGreenChannel.AutoSize = true;
-            this.rbtnGreenChannel.Location = new System.Drawing.Point(7, 80);
-            this.rbtnGreenChannel.Margin = new System.Windows.Forms.Padding(2);
+            this.rbtnGreenChannel.Location = new System.Drawing.Point(10, 120);
             this.rbtnGreenChannel.Name = "rbtnGreenChannel";
-            this.rbtnGreenChannel.Size = new System.Drawing.Size(57, 16);
+            this.rbtnGreenChannel.Size = new System.Drawing.Size(81, 22);
             this.rbtnGreenChannel.TabIndex = 2;
             this.rbtnGreenChannel.TabStop = true;
             this.rbtnGreenChannel.Text = "Green";
@@ -121,10 +121,9 @@
             // rbtnBlueChannel
             // 
             this.rbtnBlueChannel.AutoSize = true;
-            this.rbtnBlueChannel.Location = new System.Drawing.Point(7, 60);
-            this.rbtnBlueChannel.Margin = new System.Windows.Forms.Padding(2);
+            this.rbtnBlueChannel.Location = new System.Drawing.Point(10, 90);
             this.rbtnBlueChannel.Name = "rbtnBlueChannel";
-            this.rbtnBlueChannel.Size = new System.Drawing.Size(48, 16);
+            this.rbtnBlueChannel.Size = new System.Drawing.Size(67, 22);
             this.rbtnBlueChannel.TabIndex = 1;
             this.rbtnBlueChannel.TabStop = true;
             this.rbtnBlueChannel.Text = "Blue";
@@ -134,10 +133,9 @@
             // rbtnRedChannel
             // 
             this.rbtnRedChannel.AutoSize = true;
-            this.rbtnRedChannel.Location = new System.Drawing.Point(7, 40);
-            this.rbtnRedChannel.Margin = new System.Windows.Forms.Padding(2);
+            this.rbtnRedChannel.Location = new System.Drawing.Point(10, 60);
             this.rbtnRedChannel.Name = "rbtnRedChannel";
-            this.rbtnRedChannel.Size = new System.Drawing.Size(45, 16);
+            this.rbtnRedChannel.Size = new System.Drawing.Size(64, 22);
             this.rbtnRedChannel.TabIndex = 0;
             this.rbtnRedChannel.TabStop = true;
             this.rbtnRedChannel.Text = "Red";
@@ -146,9 +144,10 @@
             // 
             // btnInspect
             // 
-            this.btnInspect.Location = new System.Drawing.Point(388, 70);
+            this.btnInspect.Location = new System.Drawing.Point(552, 146);
+            this.btnInspect.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnInspect.Name = "btnInspect";
-            this.btnInspect.Size = new System.Drawing.Size(75, 24);
+            this.btnInspect.Size = new System.Drawing.Size(107, 36);
             this.btnInspect.TabIndex = 6;
             this.btnInspect.Text = "검사";
             this.btnInspect.UseVisualStyleBackColor = true;
@@ -156,9 +155,10 @@
             // 
             // btnStop
             // 
-            this.btnStop.Location = new System.Drawing.Point(388, 100);
+            this.btnStop.Location = new System.Drawing.Point(554, 190);
+            this.btnStop.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnStop.Name = "btnStop";
-            this.btnStop.Size = new System.Drawing.Size(75, 27);
+            this.btnStop.Size = new System.Drawing.Size(107, 40);
             this.btnStop.TabIndex = 7;
             this.btnStop.Text = "정지";
             this.btnStop.UseVisualStyleBackColor = true;
@@ -167,9 +167,10 @@
             // chkCycle
             // 
             this.chkCycle.AutoSize = true;
-            this.chkCycle.Location = new System.Drawing.Point(389, 133);
+            this.chkCycle.Location = new System.Drawing.Point(556, 240);
+            this.chkCycle.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.chkCycle.Name = "chkCycle";
-            this.chkCycle.Size = new System.Drawing.Size(57, 16);
+            this.chkCycle.Size = new System.Drawing.Size(79, 22);
             this.chkCycle.TabIndex = 8;
             this.chkCycle.Text = "Cycle";
             this.chkCycle.UseVisualStyleBackColor = true;
@@ -177,9 +178,10 @@
             // chkPreview
             // 
             this.chkPreview.AutoSize = true;
-            this.chkPreview.Location = new System.Drawing.Point(388, 155);
+            this.chkPreview.Location = new System.Drawing.Point(556, 274);
+            this.chkPreview.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.chkPreview.Name = "chkPreview";
-            this.chkPreview.Size = new System.Drawing.Size(69, 16);
+            this.chkPreview.Size = new System.Drawing.Size(98, 22);
             this.chkPreview.TabIndex = 9;
             this.chkPreview.Text = "Preview";
             this.chkPreview.UseVisualStyleBackColor = true;
@@ -190,30 +192,43 @@
             this.chkShowROI.AutoSize = true;
             this.chkShowROI.Checked = true;
             this.chkShowROI.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkShowROI.Location = new System.Drawing.Point(388, 177);
+            this.chkShowROI.Location = new System.Drawing.Point(556, 304);
+            this.chkShowROI.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.chkShowROI.Name = "chkShowROI";
-            this.chkShowROI.Size = new System.Drawing.Size(80, 16);
+            this.chkShowROI.Size = new System.Drawing.Size(113, 22);
             this.chkShowROI.TabIndex = 9;
             this.chkShowROI.Text = "Show ROI";
             this.chkShowROI.UseVisualStyleBackColor = true;
             this.chkShowROI.CheckedChanged += new System.EventHandler(this.chkShowROI_CheckedChanged);
+            // 
+            // btnAutoRun
+            // 
+            this.btnAutoRun.Location = new System.Drawing.Point(554, 102);
+            this.btnAutoRun.Margin = new System.Windows.Forms.Padding(4);
+            this.btnAutoRun.Name = "btnAutoRun";
+            this.btnAutoRun.Size = new System.Drawing.Size(107, 36);
+            this.btnAutoRun.TabIndex = 10;
+            this.btnAutoRun.Text = "자동 검사";
+            this.btnAutoRun.UseVisualStyleBackColor = true;
+            this.btnAutoRun.Click += new System.EventHandler(this.btnAutoRun_Click);
             // 
             // imageViewer
             // 
             this.imageViewer.AutoSize = true;
             this.imageViewer.BackColor = System.Drawing.SystemColors.AppWorkspace;
             this.imageViewer.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.imageViewer.Location = new System.Drawing.Point(12, 12);
-            this.imageViewer.Margin = new System.Windows.Forms.Padding(4);
+            this.imageViewer.Location = new System.Drawing.Point(15, 9);
+            this.imageViewer.Margin = new System.Windows.Forms.Padding(6);
             this.imageViewer.Name = "imageViewer";
-            this.imageViewer.Size = new System.Drawing.Size(369, 319);
+            this.imageViewer.Size = new System.Drawing.Size(529, 517);
             this.imageViewer.TabIndex = 2;
             // 
             // CameraForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(473, 342);
+            this.ClientSize = new System.Drawing.Size(677, 553);
+            this.Controls.Add(this.btnAutoRun);
             this.Controls.Add(this.chkShowROI);
             this.Controls.Add(this.chkPreview);
             this.Controls.Add(this.chkCycle);
@@ -223,6 +238,7 @@
             this.Controls.Add(this.btnLive);
             this.Controls.Add(this.imageViewer);
             this.Controls.Add(this.btnGrab);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "CameraForm";
             this.Text = "CameraForm";
             this.Load += new System.EventHandler(this.CameraForm_Load);
@@ -249,5 +265,6 @@
         private System.Windows.Forms.CheckBox chkCycle;
         private System.Windows.Forms.CheckBox chkPreview;
         private System.Windows.Forms.CheckBox chkShowROI;
+        private System.Windows.Forms.Button btnAutoRun;
     }
 }

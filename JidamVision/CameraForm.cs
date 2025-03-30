@@ -130,12 +130,15 @@ namespace JidamVision
 
             btnGrab.Location = new System.Drawing.Point(xPos, btnGrab.Location.Y);
             btnLive.Location = new System.Drawing.Point(xPos, btnLive.Location.Y);
+            btnAutoRun.Location = new System.Drawing.Point(xPos, btnAutoRun.Location.Y);
             btnInspect.Location = new System.Drawing.Point(xPos, btnInspect.Location.Y);
             btnStop.Location = new System.Drawing.Point(xPos, btnStop.Location.Y);
             chkCycle.Location = new System.Drawing.Point(xPos, chkCycle.Location.Y);
             chkPreview.Location = new System.Drawing.Point(xPos, chkPreview.Location.Y);
             chkShowROI.Location = new System.Drawing.Point(xPos, chkShowROI.Location.Y);
-            groupBox1.Location = new System.Drawing.Point(xPos, groupBox1.Location.Y);
+
+            int yPos = this.Height - margin - groupBox1.Height;
+            groupBox1.Location = new System.Drawing.Point(xPos, yPos);
 
             imageViewer.Width = this.Width - btnGrab.Width - margin * 2;
             imageViewer.Height = this.Height - margin * 2;
@@ -291,6 +294,11 @@ namespace JidamVision
             {
                 imageViewer.ResetEntity();
             }
+        }
+
+        private void btnAutoRun_Click(object sender, EventArgs e)
+        {
+            Global.Inst.InspStage.StartAutoRun();
         }
     }
 }

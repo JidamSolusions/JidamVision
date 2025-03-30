@@ -144,6 +144,19 @@ namespace JidamVision.Teach
 
             return true;
         }
+        
+        public bool IsDefect()
+        {
+            foreach (InspAlgorithm algo in AlgorithmList)
+            {
+                if (!algo.IsInspected)
+                    continue;
+
+                if (algo.IsDefect)
+                    return true;
+            }
+            return false;
+        }
 
         public virtual bool OffsetMove(OpenCvSharp.Point offset)
         {

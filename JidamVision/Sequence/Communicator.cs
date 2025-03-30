@@ -50,14 +50,15 @@ namespace JidamVision.Sequence
                     break;
                 case CommunicatorType.WCF:
                     string ip = parameters[0] as string;
-                    if (NetHelper.Ping(ip))
-                    {
-                        _clinet = new MessageDuplexClient(BindingType.Tcp, ip);
-                    }
-                    else
-                    {
-                        return;
-                    }
+                    _clinet = new MessageDuplexClient(BindingType.Tcp, ip);
+                    //if (NetHelper.Ping(ip))
+                    //{
+                    //    _clinet = new MessageDuplexClient(BindingType.Tcp, ip);
+                    //}
+                    //else
+                    //{
+                    //    return;
+                    //}
                     break;
             }
 

@@ -131,8 +131,8 @@ namespace JidamVision.Core
                 InitModelGrab(MAX_GRAB_BUF);
             }
 
-            //VisionSequence.Inst.InitSequence();
-            //VisionSequence.Inst.SeqCommand += SeqCommand;
+            VisionSequence.Inst.InitSequence();
+            VisionSequence.Inst.SeqCommand += SeqCommand;
 
 
             return true;
@@ -593,7 +593,8 @@ namespace JidamVision.Core
                     return false;
             }
 
-            if (!_inspWorker.RunInspect())
+            bool isDefect = false;
+            if (!_inspWorker.RunInspect(out isDefect))
                 return false;
 
             return true;
@@ -673,15 +674,14 @@ namespace JidamVision.Core
                         //검사 시작
                         string errMsg = "";
 
-                        MessagingLibrary.Message msg = (MessagingLibrary.Message)Param;
-                        _serialID = msg.SerialID;
-                        if (!OneCycle())
+                        bool isDefect = false;
+                        if (!_inspWorker.RunInspect(out isDefect))
                         {
                             errMsg = string.Format("Failed to inspect");
                             SLogger.Write(errMsg, SLogger.LogType.Error);
                         }
 
-                        VisionSequence.Inst.VisionCommand(Vision2Mmi.InspDone, errMsg);
+                        VisionSequence.Inst.VisionCommand(Vision2Mmi.InspDone, isDefect);
                     }
                     break;
                 case SeqCmd.InspEnd:
@@ -709,6 +709,30 @@ namespace JidamVision.Core
             LiveMode = false;
             UseCamera = SettingXml.Inst.CamType != CameraType.None ? true : false;
 
+            return true;
+        }
+
+        public bool StartAutoRun()
+        {
+            SLogger.Write("Action : StartAutoRun");
+
+            string modelPath = CurModel.ModelPath;
+            if (modelPath == "")
+            {
+                SLogger.Write("열려진 모델이 없습니다!", SLogger.LogType.Error);
+                MessageBox.Show("열려진 모델이 없습니다!");
+                return false;
+            }
+
+            if (_grabManager is null)
+            {
+                SLogger.Write("카메라가 설정되지 않았습니다!", SLogger.LogType.Error);
+                MessageBox.Show("카메라가 설정되지 않았습니다!");
+                return false;
+            }
+
+            string modelName = Path.GetFileNameWithoutExtension(modelPath);
+            VisionSequence.Inst.StartAutoRun(modelName);
             return true;
         }
 

@@ -109,8 +109,9 @@ namespace JidamVision.Inspect
         }
 
         //#INSP WORKER#2 InspStage내의 모든 InspWindow들을 검사하는 함수
-        public bool RunInspect()
+        public bool RunInspect(out bool isDefect)
         {
+            isDefect = false;
             Model curMode = Global.Inst.InspStage.CurModel;
             List<InspWindow> inspWindowList = curMode.InspWindowList;
             foreach (var inspWindow in inspWindowList)
@@ -125,6 +126,9 @@ namespace JidamVision.Inspect
 
             foreach (var inspWindow in inspWindowList)
             {
+                if (!isDefect && inspWindow.IsDefect())
+                    isDefect = true;
+
                 DisplayResult(inspWindow, InspectType.InspNone);
             }
 
@@ -146,7 +150,8 @@ namespace JidamVision.Inspect
             }
             else
             {
-                RunInspect();
+                bool isDefect = false;
+                RunInspect(out isDefect);
             }
 
             ResultForm resultForm = MainForm.GetDockForm<ResultForm>();
