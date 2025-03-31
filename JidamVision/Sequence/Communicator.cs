@@ -101,7 +101,7 @@ namespace JidamVision.Sequence
         {
             Message content = new Message
             {
-                Command = Message.MessageCommand.MachineName,
+                Command = Message.MessageCommand.HandShake,
                 MachineName = SettingXml.Inst.MachineName
             };
 

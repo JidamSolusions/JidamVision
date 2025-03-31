@@ -604,6 +604,8 @@ namespace JidamVision.Core
         {
             if (_inspWorker != null)
                 _inspWorker.Stop();
+
+            VisionSequence.Inst.StopAutoRun();
         }
 
         public bool VirtualGrab()
@@ -657,11 +659,14 @@ namespace JidamVision.Core
                         //검사 모드 진입
                         string errMsg = "";
 
-                        MessagingLibrary.Message msg = (MessagingLibrary.Message)Param;
-                        if (!InspectReady(msg.LotNumber, msg.SerialID))
+                        if(Param != null)
                         {
-                            errMsg = string.Format("Inspection not ready");
-                            SLogger.Write(errMsg, SLogger.LogType.Error);
+                            MessagingLibrary.Message msg = (MessagingLibrary.Message)Param;
+                            if (!InspectReady(msg.LotNumber, msg.SerialID))
+                            {
+                                errMsg = string.Format("Inspection not ready");
+                                SLogger.Write(errMsg, SLogger.LogType.Error);
+                            }
                         }
 
                         VisionSequence.Inst.VisionCommand(Vision2Mmi.InspReady, errMsg);
@@ -673,6 +678,15 @@ namespace JidamVision.Core
 
                         //검사 시작
                         string errMsg = "";
+                        
+                        if (UseCamera)
+                        {
+                            if (!Grab(0))
+                            {
+                                errMsg = string.Format("Failed to grab");
+                                SLogger.Write(errMsg, SLogger.LogType.Error);
+                            }
+                        }
 
                         bool isDefect = false;
                         if (!_inspWorker.RunInspect(out isDefect))
@@ -730,6 +744,9 @@ namespace JidamVision.Core
                 MessageBox.Show("카메라가 설정되지 않았습니다!");
                 return false;
             }
+
+            LiveMode = false;
+            UseCamera = SettingXml.Inst.CamType != CameraType.None ? true : false;
 
             string modelName = Path.GetFileNameWithoutExtension(modelPath);
             VisionSequence.Inst.StartAutoRun(modelName);

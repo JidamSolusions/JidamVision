@@ -11,6 +11,7 @@ using System.ServiceModel.Description;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 
 namespace JidamVision.Algorithm
 {
@@ -19,6 +20,8 @@ namespace JidamVision.Algorithm
     public class MatchAlgorithm : InspAlgorithm
     {
         //템플릿 매칭용 이미지(찾을 이미지)
+
+        [XmlIgnore]
         private Mat _templateImage = null;
 
         //찾을 이미지의 매칭율

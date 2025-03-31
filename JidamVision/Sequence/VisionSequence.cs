@@ -173,6 +173,11 @@ namespace JidamVision.Sequence
             _modelName = modelName;
         }
 
+        public void StopAutoRun()
+        {
+            _visionState = VisionSeq.MmiStop;
+        }
+
         public void SetVisionSeq(VisionSeq visionSeq, object param)
         {
             _visionState = visionSeq;
@@ -213,6 +218,18 @@ namespace JidamVision.Sequence
                         SLogger.Write("Vision Seq : " + _visionState.ToString());
 
                         _message.Command = Message.MessageCommand.MmiStart;
+                        _message.Status = CommandStatus.None;
+                        _message.ErrorMessage = "";
+                        SendMessage(_message);
+
+                        _visionState = VisionSeq.None;
+                    }
+                    break;
+                case VisionSeq.MmiStop:
+                    {
+                        SLogger.Write("Vision Seq : " + _visionState.ToString());
+
+                        _message.Command = Message.MessageCommand.MmiStop;
                         _message.Status = CommandStatus.None;
                         _message.ErrorMessage = "";
                         SendMessage(_message);
@@ -261,7 +278,16 @@ namespace JidamVision.Sequence
                     {
                         if (e.Status == Message.CommandStatus.Success)
                         {
-                            //비젼의 요청에 의해, OpenRecipe가 성공한 경우
+                            //비젼의 요청에 의해, MmiStart가 성공한 경우
+                            break;
+                        }
+                    }
+                    break;
+                case Message.MessageCommand.MmiStop:
+                    {
+                        if (e.Status == Message.CommandStatus.Success)
+                        {
+                            //비젼의 요청에 의해, MmiStop가 성공한 경우
                             break;
                         }
                     }
