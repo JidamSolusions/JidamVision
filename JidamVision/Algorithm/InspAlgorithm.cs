@@ -42,7 +42,7 @@ namespace JidamVision.Algorithm
         //검사할 원본 이미지
         protected Mat _srcImage = null;
 
-        public List<string> ResultString { get; set; }
+        public List<string> ResultString { get; set; } = new List<string>();
 
         public bool IsDefect { get; set; }
 

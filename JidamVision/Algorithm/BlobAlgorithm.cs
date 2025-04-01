@@ -142,12 +142,14 @@ namespace JidamVision.Algorithm
 
             OutBlobCount = findBlobCount;
 
+            IsDefect = false;
             if (BlobCount > 0)
             {
-                string result = "NG";
-                if (findBlobCount == BlobCount)
+                string result = "OK";
+                if (findBlobCount != BlobCount)
                 {
-                    result = "OK";
+                    result = "NG";
+                    IsDefect = true;
                 }
                 string resultInfo = "";
                 resultInfo = $"[{result}] match blob count [in : {BlobCount},out : {findBlobCount}]";

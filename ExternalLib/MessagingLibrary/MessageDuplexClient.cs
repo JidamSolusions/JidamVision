@@ -67,6 +67,8 @@ namespace MessagingLibrary
 
 		public override bool Connect()
 		{
+			int timeout = 5000;
+
 			_task = Task<bool>.Factory.StartNew(() =>
 			{
 				// 서버에서 보내온 메시지 수신 위해 콜백 메시지에서 이벤트 등록한다.
@@ -103,7 +105,11 @@ namespace MessagingLibrary
 
 			}, TaskCreationOptions.LongRunning);
 
-			_task.Wait();
+			if(!_task.Wait(timeout))
+			{
+                Debug.WriteLine("Server connect timeout!");
+				return false;
+            }
 
 			return _task.Result;
 		}

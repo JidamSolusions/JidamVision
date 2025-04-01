@@ -260,6 +260,17 @@ namespace JidamVision.Property
                 MessageBox.Show("숫자만 입력 가능합니다.");
                 txtHeightMax.Text = _blobAlgo.HeightMax.ToString(); // 기존 값 복원
             }
+
+            if (int.TryParse(txtCount.Text, out int blobCount))
+            {
+                _blobAlgo.BlobCount = blobCount;
+                PropertyChanged?.Invoke(this, null);
+            }
+            else
+            {
+                MessageBox.Show("숫자만 입력 가능합니다.");
+                txtCount.Text = _blobAlgo.BlobCount.ToString(); // 기존 값 복원
+            }
         }
     }
 

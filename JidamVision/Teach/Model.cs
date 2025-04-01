@@ -143,6 +143,9 @@ namespace JidamVision.Teach
         //모델 저장함수
         public void Save()
         {
+            if (ModelPath == "")
+                return;
+
             XmlHelper.SaveXml(ModelPath, this);
 
             foreach(var window in InspWindowList)

@@ -87,7 +87,6 @@ namespace JidamVision.Teach
                     inspWindow.AddInspAlgorithm(InspectType.InspBinary);
                     break;
                 case InspWindowType.Pad:
-                    inspWindow.AddInspAlgorithm(InspectType.InspMatch);
                     inspWindow.AddInspAlgorithm(InspectType.InspBinary);
                     break;
             }
