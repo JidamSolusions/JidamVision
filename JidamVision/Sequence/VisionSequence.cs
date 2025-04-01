@@ -16,35 +16,37 @@ using static MessagingLibrary.Message;
 
 namespace JidamVision.Sequence
 {
+    /*
+    #WCF_FSM# - <<<비젼 - 제어 통신을 이용한 검사 시퀸스 개발>>> 
+    제어(서버) - 비젼(클라이언트) 간의 통신
+    비젼에서 "StartAutoRun"함수를 이용해 전체 사이클을 반복하도록 명련
+    정지할때는 "StopAutoRun"함수를 이용해 제어에 정지 요청
+    */
+
+    //시퀀스에서 비젼 내부에, 특정 기능을 요청
     public enum SeqCmd
     {
         None = 0,
-        OpenRecipe,
-        InspReady,
-        VisionReady,
+        //OpenRecipe,         //제어 -> 비젼으로 모델 열기 명령
+        //InspReady,  
         InspStart,
-        InspDone,
         InspEnd,
     }
 
     public enum Vision2Mmi
     {
         None = 0,
-        InspStart,
-        InspReady,
-        InspDone,
-        InspEnd,
-        ModeLoaded,
-        MmiReady,
+        InspDone,               //비젼 -> 제어 : 검사 완료 및 결과 반환
+        InspEnd,                
         Error
     }
 
     public enum VisionSeq
     {
         None = 0,
-        OpenRecipe,
-        MmiStart,
-        MmiStop,
+        OpenRecipe,             //비젼 -> 제어 : 모델 열기 요청
+        MmiStart,                  //비젼 -> 제어 : 전체 사이클 검사 요청
+        MmiStop,                  //비젼 -> 제어 : 전체 사이클 검사 정지 요청
         Error
 
     }
@@ -167,12 +169,14 @@ namespace JidamVision.Sequence
             }
         }
 
+        //#WCF_FSM#2 비젼 -> 제어에 자동 검사 요청
         public void StartAutoRun(string modelName)
         {
             _visionState = VisionSeq.OpenRecipe;
             _modelName = modelName;
         }
 
+        //#WCF_FSM#8 비젼 -> 제어에 자동 검사 정지 요청
         public void StopAutoRun()
         {
             _visionState = VisionSeq.MmiStop;
@@ -193,6 +197,8 @@ namespace JidamVision.Sequence
                     break;
                 case VisionSeq.OpenRecipe:
                     {
+                        //#WCF_FSM#3 비젼 -> 제어에 모델 열기 요청
+
                         if (_modelName == "")
                         {
                             _visionState = VisionSeq.None;
@@ -201,7 +207,9 @@ namespace JidamVision.Sequence
 
                         SLogger.Write("Vision Seq : " + _visionState.ToString());
                         _mmiOpenRecipe = false;
+                        //OpenRecipe 명령 전달
                         _message.Command = Message.MessageCommand.OpenRecipe;
+                        //_modelName 모델명 전달
                         _message.Tool = _modelName;
                         _message.Status = CommandStatus.None;
                         _message.ErrorMessage = "";
@@ -217,6 +225,7 @@ namespace JidamVision.Sequence
 
                         SLogger.Write("Vision Seq : " + _visionState.ToString());
 
+                        //#WCF_FSM#3 비젼 -> 제어에 전체 검사 요청
                         _message.Command = Message.MessageCommand.MmiStart;
                         _message.Status = CommandStatus.None;
                         _message.ErrorMessage = "";
@@ -227,6 +236,7 @@ namespace JidamVision.Sequence
                     break;
                 case VisionSeq.MmiStop:
                     {
+                        //#WCF_FSM#9 제어에 자동 검사 정지 요청
                         SLogger.Write("Vision Seq : " + _visionState.ToString());
 
                         _message.Command = Message.MessageCommand.MmiStop;
@@ -270,7 +280,7 @@ namespace JidamVision.Sequence
                         else
                         {
                             //Mmi에서 비젼에, OpenRecipe를 요청한 경우
-                            SeqCommand(this, SeqCmd.OpenRecipe, (object)e.Tool);
+                            //SeqCommand(this, SeqCmd.OpenRecipe, (object)e.Tool);
                         }
                     }
                     break;
@@ -294,6 +304,7 @@ namespace JidamVision.Sequence
                     break;
                 case Message.MessageCommand.InspStart:
                     {
+                        //#WCF_FSM#4 제어 -> 비젼으로 검사 시작 요청
                         SeqCommand(this, SeqCmd.InspStart, e);
                     }
                     break;
@@ -310,38 +321,39 @@ namespace JidamVision.Sequence
         {
             switch (visionCmd)
             {
-                 case Vision2Mmi.ModeLoaded:
-                    {
-                        string errMsg = (string)e;
-                        if (errMsg != "")
-                        {
-                            _lastErrMsg = errMsg;
-                            SendError();
-                            break;
-                        }
+                // case Vision2Mmi.ModeLoaded:
+                //    {
+                //        string errMsg = (string)e;
+                //        if (errMsg != "")
+                //        {
+                //            _lastErrMsg = errMsg;
+                //            SendError();
+                //            break;
+                //        }
 
-                        _message.Command = Message.MessageCommand.OpenRecipe;
-                        _message.Status = CommandStatus.Success;
-                        SendMessage(_message);
-                    }
-                    break;
-                case Vision2Mmi.InspReady:
-                    {
-                        string errMsg = (string)e;
-                        if (errMsg != "")
-                        {
-                            _lastErrMsg = errMsg; 
-                            SendError();
-                            break;
-                        }
+                //        _message.Command = Message.MessageCommand.OpenRecipe;
+                //        _message.Status = CommandStatus.Success;
+                //        SendMessage(_message);
+                //    }
+                //    break;
+                //case Vision2Mmi.InspReady:
+                //    {
+                //        string errMsg = (string)e;
+                //        if (errMsg != "")
+                //        {
+                //            _lastErrMsg = errMsg; 
+                //            SendError();
+                //            break;
+                //        }
 
-                        _message.Command = Message.MessageCommand.InspReady;
-                        _message.Status = CommandStatus.Success;
-                        SendMessage(_message);
-                    }
-                    break;
+                //        _message.Command = Message.MessageCommand.InspReady;
+                //        _message.Status = CommandStatus.Success;
+                //        SendMessage(_message);
+                //    }
+                //    break;
                 case Vision2Mmi.InspDone:
                     {
+                        //#WCF_FSM#7 제어에 Ng/Good 결과를 담아 검사 완료 명령 전송
                         bool isDefect = (bool)e;
 
                         _message.Command = Message.MessageCommand.InspDone;

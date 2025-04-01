@@ -215,7 +215,6 @@
             // imageViewer
             // 
             this.imageViewer.AutoSize = true;
-            this.imageViewer.BackColor = System.Drawing.SystemColors.AppWorkspace;
             this.imageViewer.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.imageViewer.Location = new System.Drawing.Point(15, 9);
             this.imageViewer.Margin = new System.Windows.Forms.Padding(6);

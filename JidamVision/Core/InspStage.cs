@@ -630,50 +630,51 @@ namespace JidamVision.Core
         {
             switch (seqCmd)
             {
-                case SeqCmd.OpenRecipe:
-                    {
-                        SLogger.Write("MMI : OpenRecipe", SLogger.LogType.Info);
+                //case SeqCmd.OpenRecipe:
+                //    {
+                //        SLogger.Write("MMI : OpenRecipe", SLogger.LogType.Info);
 
-                        string modelName = (string)Param;
-                        string modelPath = Path.Combine(SettingXml.Inst.ModelDir, modelName, modelName + ".xml");
+                //        string modelName = (string)Param;
+                //        string modelPath = Path.Combine(SettingXml.Inst.ModelDir, modelName, modelName + ".xml");
 
-                        string errMsg = "";
+                //        string errMsg = "";
 
-                        if (File.Exists(modelPath))
-                        {
-                            if (!LoadModel(modelPath))
-                                errMsg = "모델 열기 실패!";
-                        }
-                        else
-                        {
-                            errMsg = $"{modelName}이 존재하지 않습니다!";
-                        }
+                //        if (File.Exists(modelPath))
+                //        {
+                //            if (!LoadModel(modelPath))
+                //                errMsg = "모델 열기 실패!";
+                //        }
+                //        else
+                //        {
+                //            errMsg = $"{modelName}이 존재하지 않습니다!";
+                //        }
 
-                        VisionSequence.Inst.VisionCommand(Vision2Mmi.ModeLoaded, errMsg);
-                    }
-                    break;
-                case SeqCmd.InspReady:
-                    {
-                        SLogger.Write("MMI : InspReady", SLogger.LogType.Info);
+                //        VisionSequence.Inst.VisionCommand(Vision2Mmi.ModeLoaded, errMsg);
+                //    }
+                //    break;
+                //case SeqCmd.InspReady:
+                //    {
+                //        SLogger.Write("MMI : InspReady", SLogger.LogType.Info);
 
-                        //검사 모드 진입
-                        string errMsg = "";
+                //        //검사 모드 진입
+                //        string errMsg = "";
 
-                        if(Param != null)
-                        {
-                            MessagingLibrary.Message msg = (MessagingLibrary.Message)Param;
-                            if (!InspectReady(msg.LotNumber, msg.SerialID))
-                            {
-                                errMsg = string.Format("Inspection not ready");
-                                SLogger.Write(errMsg, SLogger.LogType.Error);
-                            }
-                        }
+                //        if(Param != null)
+                //        {
+                //            MessagingLibrary.Message msg = (MessagingLibrary.Message)Param;
+                //            if (!InspectReady(msg.LotNumber, msg.SerialID))
+                //            {
+                //                errMsg = string.Format("Inspection not ready");
+                //                SLogger.Write(errMsg, SLogger.LogType.Error);
+                //            }
+                //        }
 
-                        VisionSequence.Inst.VisionCommand(Vision2Mmi.InspReady, errMsg);
-                    }
-                    break;
+                //        VisionSequence.Inst.VisionCommand(Vision2Mmi.InspReady, errMsg);
+                //    }
+                //    break;
                 case SeqCmd.InspStart:
                     {
+                        //#WCF_FSM#5 카메라 촬상 후, 검사 진행
                         SLogger.Write("MMI : InspStart", SLogger.LogType.Info);
 
                         //검사 시작
@@ -695,6 +696,7 @@ namespace JidamVision.Core
                             SLogger.Write(errMsg, SLogger.LogType.Error);
                         }
 
+                        //#WCF_FSM#6 비젼 -> 제어에 검사 완료 및 결과 전송
                         VisionSequence.Inst.VisionCommand(Vision2Mmi.InspDone, isDefect);
                     }
                     break;
