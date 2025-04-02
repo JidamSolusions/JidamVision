@@ -402,7 +402,7 @@ namespace JidamVision.Sequence
                 _communicator.Create(CommunicatorType.WCF, SettingXml.Inst.CommIP);
                 if (_communicator.State == System.ServiceModel.CommunicationState.Opened)
                 {
-                    _communicator.SendMessage(CreateMachineNameMessage(machineName));
+                    _communicator.SendMachineInfo();
                     SLogger.Write("WCF " + machineName + " : Opened",  LogType.Info);
                     IsMmiConnected = true;
                 }
