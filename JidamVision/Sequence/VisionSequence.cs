@@ -2,6 +2,7 @@
 using JidamVision.Util;
 using MessagingLibrary;
 using MessagingLibrary.MessageInterface;
+using OpenCvSharp;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -11,7 +12,9 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Web.Hosting;
+using static JidamVision.Util.SLogger;
 using static MessagingLibrary.Message;
 
 namespace JidamVision.Sequence
@@ -86,9 +89,17 @@ namespace JidamVision.Sequence
 
         public bool IsMmiConnected { get; set; } = false;
 
+        private bool _rtyconnect = false;
+
+        private System.Timers.Timer _timerReConnect = new System.Timers.Timer();
+
         public VisionSequence()
         {
-
+            _rtyconnect = false;
+        }
+        ~VisionSequence()
+        {
+            _rtyconnect = false;
         }
 
         private bool InitCommunicator()
@@ -98,6 +109,11 @@ namespace JidamVision.Sequence
                 SLogger.Write("WCF 통신 초기화!");
 
                 string ipAddr = SettingXml.Inst.CommIP;
+
+                _timerReConnect.Interval = 5000;
+                _timerReConnect.Elapsed += _timerReConnect_Elapsed;
+                _timerReConnect.Stop();
+                _rtyconnect = true;
 
                 #region WCF
 
@@ -377,6 +393,25 @@ namespace JidamVision.Sequence
             _visionState = VisionSeq.None;
         }
 
+        private void _timerReConnect_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            _timerReConnect.Stop();
+            if (_rtyconnect)
+            {
+                string machineName = SettingXml.Inst.MachineName;
+                _communicator.Create(CommunicatorType.WCF, SettingXml.Inst.CommIP);
+                if (_communicator.State == System.ServiceModel.CommunicationState.Opened)
+                {
+                    _communicator.SendMessage(CreateMachineNameMessage(machineName));
+                    SLogger.Write("WCF " + machineName + " : Opened",  LogType.Info);
+                    IsMmiConnected = true;
+                }
+                else
+                {
+                    _timerReConnect.Start();
+                }
+            }
+        }
 
         private void Communicator_Opened(object sender, EventArgs e)
         {
@@ -386,6 +421,7 @@ namespace JidamVision.Sequence
 
         private void Communicator_Closed(object sender, EventArgs e)
         {
+            _timerReConnect.Start();
             SLogger.Write("서버와의 연결이 끊어졌습니다.", SLogger.LogType.Error);
             IsMmiConnected = false;
         }
