@@ -56,6 +56,7 @@ namespace JidamVision.Grab
                 }
             }
 
+            _grabDoneEvent.Set(); // 이벤트 발생시킴
             OnTransferCompleted(BufferIndex);
 
             //IO 트리거 촬상시 최대 버퍼를 넘으면 첫번째 버퍼로 변경
@@ -174,6 +175,8 @@ namespace JidamVision.Grab
             BufferIndex = bufferIndex;
             bool err = true;
 
+            _grabDoneEvent.Reset();
+
             if (!HardwareTrigger)
             {
                 try
@@ -187,6 +190,16 @@ namespace JidamVision.Grab
                 catch
                 {
                     err = false;
+                }
+            }
+
+            if(waitDone)
+            {
+                // 콜백이 호출될 때까지 최대 3초 대기
+                if (!_grabDoneEvent.WaitOne(3000))
+                {
+                    Console.WriteLine("Grab timeout!");
+                    return false;
                 }
             }
 

@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using static MvCamCtrl.NET.MyCamera;
 
@@ -76,6 +77,8 @@ namespace JidamVision.Grab
 
         internal bool HardwareTrigger { get; set; } = false;
         internal bool IncreaseBufferIndex { get; set; } = false;
+
+        protected AutoResetEvent _grabDoneEvent = new AutoResetEvent(false);
 
         internal abstract bool Create(string strIpAddr = null);
 
