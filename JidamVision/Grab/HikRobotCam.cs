@@ -43,7 +43,7 @@ namespace JidamVision.Grab
                     _pixelConvertParam.pSrcData = pData;
                     _pixelConvertParam.nSrcDataLen = pFrameInfo.nFrameLen;
                     _pixelConvertParam.enSrcPixelType = pFrameInfo.enPixelType;
-                    _pixelConvertParam.enDstPixelType = MvGvspPixelType.PixelType_Gvsp_RGB8_Packed;
+                    _pixelConvertParam.enDstPixelType = MvGvspPixelType.PixelType_Gvsp_BGR8_Packed;
                     _pixelConvertParam.pDstBuffer = _userImageBuffer[BufferIndex].ImageBufferPtr;
                     _pixelConvertParam.nDstBufferSize = pFrameInfo.nFrameLen * 3;
 
@@ -456,11 +456,6 @@ namespace JidamVision.Grab
             if (auto)
             {
                 int nRet = _camera.MV_CC_SetBalanceWhiteAuto_NET(1);
-
-                //// 자동 화이트 밸런스 설정
-                //int nRet = _camera.MV_CC_SetEnumValue_NET("BalanceWhiteAuto",
-                //    (uint)MyCamera.MV_CAM_BALANCEWHITE_AUTO.MV_BALANCEWHITE_AUTO_ONCE);
-
                 if (MyCamera.MV_OK != nRet)
                 {
                     SLogger.Write("Failed to enable auto white balance!",SLogger.LogType.Error);
